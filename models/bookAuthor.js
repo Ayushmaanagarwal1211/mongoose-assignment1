@@ -6,10 +6,7 @@ const profileSchema = mongoose.Schema({
     borrowedBooks : {
         type : [{type : mongoose.Schema.Types.ObjectId, ref :"borrowedBooks"}],
         default : []
-    },
-    role : String,
-    email : String,
-    password : String
+    }
 })
 
-module.exports = mongoose.model("userprofile" , profileSchema)
+module.exports = mongoose.model("author" , profileSchema)

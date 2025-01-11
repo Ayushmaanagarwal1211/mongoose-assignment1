@@ -6,7 +6,7 @@ const mongooseSchema = mongoose.Schema({
         type : String, 
         required : true
     }, 
-    author : String, 
+    author : {type:mongoose.Schema.Types.ObjectId, ref:"author"}, 
     publishDate : { 
         type : String,
         default : Date.now
