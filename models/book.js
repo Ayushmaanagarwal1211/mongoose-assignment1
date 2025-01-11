@@ -6,15 +6,16 @@ const mongooseSchema = mongoose.Schema({
         type : String, 
         required : true
     }, 
-    author : {type:mongoose.Schema.Types.ObjectId, ref:"author"}, 
+    author : {type:mongoose.Schema.Types.ObjectId, ref:"author", required:true}, 
     publishDate : { 
         type : String,
         default : Date.now
     },
     genres : {
-        type : [String]
+        type : [String],
+        default  : []
     } ,
-    price : Number
+    price : {type : Number,required:true}
 
 })
 

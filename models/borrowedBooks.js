@@ -2,7 +2,8 @@ const mongoose = require("mongoose")
 const borrowedBooks  = mongoose.Schema({
     book : {
         type : mongoose.Schema.Types.ObjectId,
-        ref   : "book"
+        ref   : "book",
+        required : true
     },
     issueDate : {
         type:String,

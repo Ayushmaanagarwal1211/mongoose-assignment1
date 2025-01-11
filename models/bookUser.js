@@ -2,14 +2,14 @@ const mongoose = require("mongoose")
 
 
 const profileSchema = mongoose.Schema({
-    name : String,
+    name : {type:String, required:true},
     borrowedBooks : {
         type : [{type : mongoose.Schema.Types.ObjectId, ref :"borrowedBooks"}],
         default : []
     },
-    role : String,
-    email : String,
-    password : String
+    role : {type:String, default : "user"},
+    email : {type:String, required:true},
+    password : {type:String, required:true}
 })
 
 module.exports = mongoose.model("userprofile" , profileSchema)

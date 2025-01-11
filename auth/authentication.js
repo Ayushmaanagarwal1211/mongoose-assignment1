@@ -6,7 +6,6 @@ const jwt =  require("jsonwebtoken")
 const dotenv = require("dotenv").config()
 const JWT_SECRET = process.env.JWT_SECRET
 const refreshTokensSet = new Set()
-const crypto = require("crypto")
 const REFRESH_TOKEN =process.env.REFRESH_TOKEN
 const User = require("../models/bookUser.js")
 
@@ -21,7 +20,7 @@ router.post("/",async (req,res)=>{
 router.delete('/logout',async (req,res)=>{
    console.log(refreshTokensSet)
     refreshTokensSet.delete(req.body.refresh_token)
-    return res.json(refreshTokensSet  )  
+    return res.json(refreshTokensSet )  
 })
 router.post('/login',async (req,res)=>{
     const {email,password} = req.body
@@ -40,14 +39,12 @@ router.post('/login',async (req,res)=>{
     }
     res.json("Wrong user")
 })
-router.get("/access",checkUser,async (req,res)=>{
-    res.status(200).json(req.user)
-})
+
 router.post("/refresh-token",(req,res)=>{
     const refresh__token = req.body.refresh_token
     if(!refreshTokensSet.has(refresh__token)){return res.status(400).send("Expired")}
-    const data ={username : jwt.verify(refresh__token, REFRESH_TOKEN).username}
-    const new_token = jwt.sign(data, JWT_SECRET,{expiresIn:"20s"})
+    const data = jwt.verify(refresh__token, REFRESH_TOKEN)
+    const new_token = generateToken(data)
     return res.status(200).json({new_token})
 })
 function checkUser(req,res,next){
@@ -68,10 +65,8 @@ function checkUser(req,res,next){
     }
 }
 function generateToken(data){
-    const token = jwt.sign(data,JWT_SECRET)
+    const token = jwt.sign(data,JWT_SECRET,{expiresIn:"20s"})
     return token
 }
-router.post("/refresh-token",(req,res)=>{
 
-})
 module.exports = {router,refreshTokensSet,checkUser}
