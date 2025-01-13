@@ -15,7 +15,8 @@ const mongooseSchema = mongoose.Schema({
         type : [String],
         default  : []
     } ,
-    price : {type : Number,required:true}
+    price : {type : Number,required:true},
+    isBorrowed : {type : Boolean, default:false}
 
 })
 

@@ -85,18 +85,31 @@ function checkAccessForBooksBorrowOrReturn(...roles){
 router.post("/users/borrow/:id/:bookId",checkAccessForBooksBorrowOrReturn("admin"),checkHasBookAndUser,async (req,res)=>{
     const user = await User.findById(req.params.id)
     const currBook = await borrowedBooks.create({book : req.params.bookId})
+    const book  = await Books.findById(req.params.bookId)
+    if(book.isBorrowed){
+        return res.send("Book Already Sold")
+    }
+    book.isBorrowed = true
+    await book.save()
     user.borrowedBooks.push(currBook._id)
     await user.save()
     res.send(user)
 })
 
 router.post("/users/return/:id/:bookId",checkAccessForBooksBorrowOrReturn("admin"),checkHasBookAndUser,async (req,res)=>{
+    const original_book  = await Books.findById(req.params.bookId)
+    if(!original_book.isBorrowed){
+        return res.send("You dont have this purchased Book")
+    }
+    original_book.isBorrowed = false
+    await original_book.save()
+
     const user = await User.findById(req.params.id).populate("borrowedBooks")
-    const book  =user.borrowedBooks.find(data => data.book.toString() == req.params.bookId)
+    const book  =user.borrowedBooks.find(data => data.book.toString() == req.params.bookId) // borrowed book ko find krne ke liye for the given book id 
     user.borrowedBooks = user.borrowedBooks.filter(data => data.book.toString() !== req.params.bookId)
     book.returnDate  =Date.now()
     await user.save()
-     await book.save()
+    await book.save()
     res.json({user,book})
 })
 module.exports = router
